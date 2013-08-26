@@ -41,8 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\SpaceWarDiv2.cs">
-      <Link>SpaceWarDiv2.cs</Link>
+    <Compile Include="..\UndoHistory.cs">
+      <Link>UndoHistory.cs</Link>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
