@@ -41,8 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\UndoHistory.cs">
-      <Link>UndoHistory.cs</Link>
+    <Compile Include="..\ArcadeManao.cs">
+      <Link>ArcadeManao.cs</Link>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
