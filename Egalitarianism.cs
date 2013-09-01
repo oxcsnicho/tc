@@ -5,52 +5,50 @@ using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 public class Egalitarianism {
     public int maxDifference(string[] isFriend, int d) {
+        map = isFriend;
         int res = 0;
-        for (int i = 0; i < isFriend.Length; i++)
+        for (int i = 0; i < map.Length; i++)
         {
-            for (int j = i+1; j < isFriend.Length; j++)
+            for (int j = i+1; j < map.Length; j++)
             {
-                int dist = bfs(isFriend, i, j);
-                if (dist == -1 || dist>res && res !=-1)
-                    res = dist;
-            } 
+                res = Math.Max(res, bfs(i, j));
+            }
         }
-        return res > 0 ? res * d : res;
+        return res == map.Length + 3 ? -1 : res * d;
     }
 
-    private int bfs(string[] isFriend, int i, int j)
+    string[] map;
+    int bfs(int i, int j)
     {
-        if (i == j)
-            return 0;
-        int n = isFriend.Length;
-        int[] v = new int[n];
-        for (int k = 0; k < n; k++)
+        int[] mark = new int[map.Length];
+        for (int k = 0; k < mark.Length; k++)
         {
-            v[k] = -1;
+            mark[k] = -1;
         }
         List<int> q = new List<int>();
         q.Add(i);
-        v[i] = 0;
+        mark[i] = 0;
         while (q.Count > 0)
         {
-            for (int k = 0; k < n; k++)
+            for (int k = 0; k < map[q[0]].Length; k++)
             {
-                if (v[k] == -1 && isFriend[q[0]][k] == 'Y')
+                if (q[0]!=k && map[q[0]][k] == 'Y' && mark[k] == -1)
                 {
-                    q.Add(k);
-                    v[k] = v[q[0]] + 1;
                     if (k == j)
-                        return v[k];
+                        return mark[q[0]]+1;
+                    q.Add(k);
+                    mark[k] = mark[q[0]]+1;
                 }
             }
             q.RemoveAt(0);
         }
-        return -1;
+        return map.Length+3;
     }
 
 // BEGIN CUT HERE
@@ -97,10 +95,6 @@ public class Egalitarianism {
                , 747),2988);
             eq(6,(new Egalitarianism()).maxDifference(new string[] {"NY",
                 "YN"}, 0),0);
-            eq(7, (new Egalitarianism()).maxDifference(new string[] { "NNNYNNNNNNNNNNNNNNNNNNNNNNYNNYNNNNNNNNNNNYNNNY",
-                "NNNNNNNYNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNYN", "NNNNNNNNNNYNNNYNNNNNNNNNYNNNNNNNNNNNNNNNNNNNYN", "YNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNYNNNNNNYNNYN", "NNNNNNNNNNNNNYNYNNNNYNNNNNNNNNNNYNNNNNNNNNNNNN", "NNNNNNNNNNNNNNNNNNNYNNYNNNNNNNNYNYNNNNNNNNNNNN", "NNNNNNNNNNNNNNNNNNNNNNNYNNNNNNNNNNNNNNNNNNNNNN", "NYNNNNNNNNNNNYNNNNNNNYNNNNNNNNNNNNNNNNNNNNNNNN", "NNNNNNNNNNNNNYNNYNNNNNNNNNNNNNYNNNNNNNNNNNNNNN", "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN", "NNYNNNNNNNNNNNNNNNNNNYNNNNYNNNNNNNNYNNYNNNNNNN", "NNNNNNNNNNNNYNNNNNNNNNNNNNNNNNYNNNNNNYNYNNNNNN", "NNNNNNNNNNNYNNYNNNNYNNNNNNNNNNNNNNNNNNNYNNNNNN", "NNNNYNNYYNNNNNNNNNNNNNNNNNNYNNNNNNNNNNNNNNNNNN", "NNYNNNNNNNNNYNNNNNNNNNNNNNNNNNNNNNNNYNNNNNNNNN", "NNNNYNNNNNNNNNNNNNNNNNYNNNNNNNYYNNNNNNNNNNNNNN", "NNNNNNNNYNNNNNNNNNYYNNNNNNNNNNNNNNNNNNNNNNNNNN", "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNYNNNNNNNNNNNNNNNN", "NNNNNNNNNNNNNNNNYNNNNNNNNNNNYNNYNNNNYNNNNNNNNN", "NNNNNYNNNNNNYNNNYNNNNNNNNNNNNNYNNNNNNNNYNNNNNN", "NNNNYNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNY", "NNNNNNNYNNYNNNNNNNNNNNNNNNNNNNYNNNNNNNNNNNNNNN", "NNNNNYNNNNNNNNNYNNNNNNNNNNNNNNNNNNNNNNNNNNNYNN", "NNNNNNYNNNNNNNNNNNNNNNNNNNNNNNNYNNNYNNNNNNYNNN", "NNYNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN", "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN", "YNNNNNNNNNYNNNNNNNNNNNNNNNNNNNNNNYNNNNNNNNNNNN", "NNNNNNNNNNNNNYNNNNNNNNNNNNNNYNNNNNNNNNNNNNNYNN", "NNNNNNNNNNNNNNNNNNYNNNNNNNNYNYNNNNNNNNNNNNNNNN", "YNNNNNNNNNNNNNNNNYNNNNNNNNNNYNNNNNNNNNNNNNNYNN", "NNNNNNNNYNNYNNNYNNNYNYNNNNNNNNNNNNNNNNNNNNNNNN", "NNNNNYNNNNNNNNNYNNYNNNNYNNNNNNNNNNYNNNNNNNNNNN", "NNNNYNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN", "NNNNNYNNNNNNNNNNNNNNNNNNNNYNNNNNNNNNNNNNNNYNNN", "NNNYNNNNNNNNNNNNNNNNNNNNNNNNNNNYNNNNNNNNNNNNNN", "NNNNNNNNNNYNNNNNNNNNNNNYNNNNNNNNNNNNNNNNNNNNNN", "NNNNNNNNNNNNNNYNNNYNNNNNNNNNNNNNNNNNNNNNNNNNNN", "NNNNNNNNNNNYNNNNNNNNNNNNNNNNNNNNNNNNNNNNYNNNNN", "NNNNNNNNNNYNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN", "NNNNNNNNNNNYYNNNNNNYNNNNNNNNNNNNNNNNNNNNNNNNNN", "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNYNNNNNNNN", "YNNYNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNYNNN", "NNNNNNNNNNNNNNNNNNNNNNNYNNNNNNNNNYNNNNNNNYNNNN", "NNNNNNNNNNNNNNNNNNNNNNYNNNNYNYNNNNNNNNNNNNNNNN", "NYYYNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
-                "YNNNNNNNNNNNNNNNNNNNYNNNNNNNNNNNNNNNNNNNNNNNNN" },
-                931), -1 );
         } 
         catch( Exception exx)  {
             System.Console.WriteLine(exx);
