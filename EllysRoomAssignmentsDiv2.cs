@@ -7,35 +7,35 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
+using System.Linq;
 
 public class EllysRoomAssignmentsDiv2
 {
     public double getProbability(string[] ratings)
     {
-        StringBuilder sb = new StringBuilder();
-        foreach (var item in ratings)
+        string rr = "";
+        for (int i = 0; i < ratings.Length; i++)
         {
-            sb.Append(item);
+            rr += ratings[i];
         }
-        List<int> a = new List<int>();
-        foreach (var item in sb.ToString().Split(new char[] { ' ' }))
-        {
-            a.Add(int.Parse(item));
-        }
-        var b = a.ToArray();
 
-        int e = b[0];
-        Array.Sort(b);
-        Array.Reverse(b);
-        int ie = Array.FindIndex(b, (x) => x == e);
-        int R = b.Length % 20 == 0 ? b.Length / 20 : b.Length / 20 + 1;
+        var rrr = rr.Split(new char[] { ' ' });
+        int[] r = new int[rrr.Length];
+        for (int i = 0; i < r.Length; i++)
+        {
+            r[i] = int.Parse(rrr[i]);
+        }
+
+        int R = (r.Length + 19) / 20;
+        int e = r[0];
+        Array.Sort(r);
+        Array.Reverse(r);
+        int ie = Array.FindIndex(r, (x) => x == e);
         if (ie == 0)
             return 1;
-        else if (ie < R)
+        if (ie < R)
             return 0;
-        else
-            return (double)1 / R;
+        else return (double)1/R;
     }
 
     // BEGIN CUT HERE

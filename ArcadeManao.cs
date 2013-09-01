@@ -7,83 +7,66 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 public class ArcadeManao
 {
     public int shortestLadder(string[] level, int coinRow, int coinColumn)
     {
+        map = level;
+        mark = new bool[map.Length, map[0].Length];
         int res = 0;
-        while (bfs(level, coinRow-1, coinColumn-1, res) == false)
+        while (res < map.Length)
+        {
+            Array.Clear(mark, 0, mark.Length);
+            // BEGIN CUT HERE
+            for (int i = 0; i < mark.GetLength(0); i++)
+            {
+                for (int j = 0; j < mark.GetLength(1); j++)
+                {
+                    Debug.Write(mark[i, j] ? "X" : ".");
+                }
+                Debug.Write(Environment.NewLine);
+            }
+            // END CUT HERE
+            dfs(map.Length - 1, 0, res);
+            // BEGIN CUT HERE
+            for (int i = 0; i < mark.GetLength(0); i++)
+            {
+                for (int j = 0; j < mark.GetLength(1); j++)
+                {
+                    Debug.Write(mark[i, j] ? "X" : ".");
+                }
+                Debug.Write(Environment.NewLine);
+            }
+            // END CUT HERE
+            if (mark[coinRow - 1, coinColumn - 1] == true)
+                break;
             res++;
+        }
         return res;
     }
 
-    private bool bfs(string[] level, int coinRow, int coinColumn, int len)
+
+    string[] map;
+    bool[,] mark;
+    void dfs(int i, int j, int l)
     {
-        List<int> a = new List<int>();
-        List<int> b = new List<int>();
-        bool[,] m = new bool[level.Length, level[0].Length];
-        a.Add(level.Length-1);
-        b.Add(0);
-        m[level.Length-1, 0] = true;
-        while (a.Count > 0)
+        if (i < 0 || j < 0 || i >= map.Length || j >= map[0].Length)
+            return;
+        if (mark[i, j] == true)
+            return;
+        if (map[i][j] != 'X')
+            return;
+
+        mark[i, j] = true;
+        dfs(i, j - 1, l);
+        dfs(i, j + 1, l);
+        for (int k = 1; k <= l; k++)
         {
-            if (a[0] == coinRow && b[0] == coinColumn)
-                return true;
-            int x,y;
-            x=a[0];
-            y = b[0]-1;
-            if (x >= 0 && y >= 0 && x < level.Length && y < level[0].Length
-                && m[x,y] == false && level[x][y] == 'X')
-            {
-                a.Add(x);
-                b.Add(y);
-                m[x, y] = true;
-            }
-            x=a[0];
-            y = b[0]+1;
-            if (x >= 0 && y >= 0 && x < level.Length && y < level[0].Length
-                && m[x,y] == false && level[x][y] == 'X')
-            {
-                a.Add(x);
-                b.Add(y);
-                m[x, y] = true;
-            }
-            for (int i = 1; i <=len; i++)
-            {
-                x = a[0]-i;
-                y = b[0];
-                if (x >= 0 && y >= 0 && x < level.Length && y < level[0].Length
-                    && m[x, y] == false && level[x][y] == 'X')
-                {
-                    a.Add(x);
-                    b.Add(y);
-                    m[x, y] = true;
-                }
-                x = a[0]+i;
-                y = b[0];
-                if (x >= 0 && y >= 0 && x < level.Length && y < level[0].Length
-                    && m[x, y] == false && level[x][y] == 'X')
-                {
-                    a.Add(x);
-                    b.Add(y);
-                    m[x, y] = true;
-                }
-            }
-            a.RemoveAt(0);
-            b.RemoveAt(0);
+            dfs(i + k, j, l);
+            dfs(i - k, j, l);
         }
-        // BEGIN CUT HERE
-        for (int i = 0; i < m.GetLength(0); i++)
-        {
-            for (int j = 0; j < m.GetLength(1); j++)
-            {
-                print(m[i,j]?'x':'.');
-            }
-            print(Environment.NewLine);
-        }
-        // END CUT HERE
-        return false;
     }
 
     // BEGIN CUT HERE
