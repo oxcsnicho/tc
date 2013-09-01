@@ -41,8 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\ArcadeManao.cs">
-      <Link>ArcadeManao.cs</Link>
+    <Compile Include="..\TheNumberGameDivTwo.cs">
+      <Link>TheNumberGameDivTwo.cs</Link>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
