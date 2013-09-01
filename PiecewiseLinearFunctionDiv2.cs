@@ -5,44 +5,46 @@ using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 public class PiecewiseLinearFunctionDiv2
 {
     public int[] countSolutions(int[] Y, int[] query)
     {
-        int[] res = new int[query.Length];
-        Array.Clear(res, 0, res.Length);
-        for (int j = 0; j < query.Length; j++)
+        int[] ress = new int[query.Length];
+        for (int i = 0; i < ress.Length; i++)
         {
-            var q = query[j];
-            for (int i = 0; i < Y.Length - 1; i++)
+            int res = 0;
+            for (int j = 0; j < Y.Length; j++)
             {
-                if (Y[i] == Y[i + 1])
-                {
-                    if (Y[i] == q)
-                    {
-                        res[j] = -1;
-                        break;
-                    }
-                }
-                if (Y[i] == q
-                    || Y[i] <= q && Y[i + 1] > q
-                    || Y[i] >= q && Y[i + 1] < q)
-                    res[j]++;
+                if (Y[j] == query[i])
+                    res++;
             }
-            if (res[j]!=-1 && Y[Y.Length - 1] == q)
-                res[j]++;
+            for (int j = 1; j < Y.Length; j++)
+            {
+                if (Y[j - 1] == query[i] && Y[j] == query[i])
+                {
+                    res = -1;
+                    break;
+                }
+                if (Y[j - 1] < query[i] && Y[j] > query[i]
+                || Y[j - 1] > query[i] && Y[j] < query[i])
+                    res++;
+            }
+            ress[i] = res;
         }
-        return res;
+        return ress;
     }
 
     // BEGIN CUT HERE
+    static List<int> cases = new List<int> { };
     public static void Test()
     {
         try
         {
-            eq(0, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 1, 4, -1, 2 }, new int[] { -2, -1, 0, 1 }), new int[] { 0, 1, 2, 3 });
+            eq(0, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 1, 4, -1, 2 }, new int[] { -2, -1, 0, 1, 10, -10 }), new int[] { 0, 1, 2, 3, 0, 0 });
             eq(1, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 0, 0 }, new int[] { -1, 0, 1 }), new int[] { 0, -1, 0 });
             eq(2, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 2, 4, 8, 0, 3, -6, 10 }, new int[] { 0, 1, 2, 3, 4, 0, 65536 }), new int[] { 3, 4, 5, 4, 3, 3, 0 });
             eq(3, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { -178080289, -771314989, -237251715, -949949900, -437883156, -835236871, -316363230, -929746634, -671700962 }
@@ -50,12 +52,15 @@ public class PiecewiseLinearFunctionDiv2
         }
         catch (Exception exx)
         {
-            Debug.WriteLine(exx);
-            Debug.WriteLine(exx.StackTrace);
+            System.Console.WriteLine(exx);
+            System.Console.WriteLine(exx.StackTrace);
         }
     }
     private static void eq(int n, object have, object need)
     {
+        if (cases != null && cases.Count > 0)
+            if (!cases.Exists((a) => a == n))
+                return;
         if (eq(have, need))
         {
             Debug.WriteLine("Case " + n + " passed.");
@@ -71,6 +76,9 @@ public class PiecewiseLinearFunctionDiv2
     }
     private static void eq(int n, Array have, Array need)
     {
+        if (cases != null && cases.Count > 0)
+            if (!cases.Exists((a) => a == n))
+                return;
         if (have == null || have.Length != need.Length)
         {
             Debug.WriteLine("Case " + n + " failed: returned " + have.Length + " elements; expected " + need.Length + " elements.");
@@ -135,3 +143,4 @@ public class PiecewiseLinearFunctionDiv2
     }
     // END CUT HERE
 }
+

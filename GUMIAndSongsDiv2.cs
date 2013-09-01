@@ -5,57 +5,75 @@ using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
-public class PiecewiseLinearFunctionDiv2
+public class GUMIAndSongsDiv2
 {
-    public int[] countSolutions(int[] Y, int[] query)
+    public int maxSongs(int[] d, int[] tone, int T)
     {
-        int[] res = new int[query.Length];
-        Array.Clear(res, 0, res.Length);
-        for (int j = 0; j < query.Length; j++)
+        int res = 0;
+        if (d.Length == 1)
+            return T <= d[0] ? 0 : 1;
+        Array.Sort(d);
+        if (d[0] < T)
+            res = 1;
+
+        Array.Sort(tone, d);
+        // BEGIN CUT HERE
+        print(d);
+        print(tone);
+        // END CUT HERE
+        for (int i = 0; i < d.Length; i++)
         {
-            var q = query[j];
-            for (int i = 0; i < Y.Length - 1; i++)
+            for (int j = i + 1; j < d.Length; j++)
             {
-                if (Y[i] == Y[i + 1])
+                int tt = T - tone[j] + tone[i];
+                if (tt < 0)
+                    continue;
+                int[] aa = new int[j - i + 1];
+                Array.Copy(d, i, aa, 0, j - i + 1);
+                Array.Sort(aa);
+                int ress = 0;
+                for (int k = 0; k < aa.Length; k++)
                 {
-                    if (Y[i] == q)
+                    if (tt >=aa[k])
                     {
-                        res[j] = -1;
-                        break;
+                        ress++;
+                        tt -= aa[k];
                     }
                 }
-                if (Y[i] == q
-                    || Y[i] <= q && Y[i + 1] > q
-                    || Y[i] >= q && Y[i + 1] < q)
-                    res[j]++;
+                res = Math.Max(ress, res);
             }
-            if (res[j]!=-1 && Y[Y.Length - 1] == q)
-                res[j]++;
         }
         return res;
     }
 
     // BEGIN CUT HERE
+    static List<int> cases = new List<int> { };
     public static void Test()
     {
         try
         {
-            eq(0, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 1, 4, -1, 2 }, new int[] { -2, -1, 0, 1 }), new int[] { 0, 1, 2, 3 });
-            eq(1, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 0, 0 }, new int[] { -1, 0, 1 }), new int[] { 0, -1, 0 });
-            eq(2, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 2, 4, 8, 0, 3, -6, 10 }, new int[] { 0, 1, 2, 3, 4, 0, 65536 }), new int[] { 3, 4, 5, 4, 3, 3, 0 });
-            eq(3, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { -178080289, -771314989, -237251715, -949949900, -437883156, -835236871, -316363230, -929746634, -671700962 }
-               , new int[] { -673197622, -437883156, -251072978, 221380900, -771314989, -949949900, -910604034, -671700962, -929746634, -316363230 }), new int[] { 8, 6, 3, 0, 7, 1, 4, 8, 3, 4 });
+            eq(0, (new GUMIAndSongsDiv2()).maxSongs(new int[] { 3, 5, 4, 11 }, new int[] { 2, 1, 3, 1 }, 17), 3);
+            eq(1, (new GUMIAndSongsDiv2()).maxSongs(new int[] { 100, 200, 300 }, new int[] { 1, 2, 3 }, 10), 0);
+            eq(2, (new GUMIAndSongsDiv2()).maxSongs(new int[] { 1, 2, 3, 4 }, new int[] { 1, 1, 1, 1 }, 100), 4);
+            eq(3, (new GUMIAndSongsDiv2()).maxSongs(new int[] { 10, 10, 10 }, new int[] { 58, 58, 58 }, 30), 3);
+            eq(4, (new GUMIAndSongsDiv2()).maxSongs(new int[] { 8, 11, 7, 15, 9, 16, 7, 9 }, new int[] { 3, 8, 5, 4, 2, 7, 4, 1 }, 14), 1);
+            eq(5, (new GUMIAndSongsDiv2()).maxSongs(new int[] { 5611, 39996, 20200, 56574, 81643, 90131, 33486, 99568, 48112, 97168, 5600, 49145, 73590, 3979, 94614 }, new int[] { 2916, 53353, 64924, 86481, 44803, 61254, 99393, 5993, 40781, 2174, 67458, 74263, 69710, 40044, 80853 }, 302606), 8);
         }
         catch (Exception exx)
         {
-            Debug.WriteLine(exx);
-            Debug.WriteLine(exx.StackTrace);
+            System.Console.WriteLine(exx);
+            System.Console.WriteLine(exx.StackTrace);
         }
     }
     private static void eq(int n, object have, object need)
     {
+        if (cases != null && cases.Count > 0)
+            if (!cases.Exists((a) => a == n))
+                return;
         if (eq(have, need))
         {
             Debug.WriteLine("Case " + n + " passed.");
@@ -71,6 +89,9 @@ public class PiecewiseLinearFunctionDiv2
     }
     private static void eq(int n, Array have, Array need)
     {
+        if (cases != null && cases.Count > 0)
+            if (!cases.Exists((a) => a == n))
+                return;
         if (have == null || have.Length != need.Length)
         {
             Debug.WriteLine("Case " + n + " failed: returned " + have.Length + " elements; expected " + need.Length + " elements.");
@@ -135,3 +156,4 @@ public class PiecewiseLinearFunctionDiv2
     }
     // END CUT HERE
 }
+

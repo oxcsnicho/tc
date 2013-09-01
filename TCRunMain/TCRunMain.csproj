@@ -41,8 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\GearsDiv2.cs">
-      <Link>GearsDiv2.cs</Link>
+    <Compile Include="..\PiecewiseLinearFunctionDiv2.cs">
+      <Link>PiecewiseLinearFunctionDiv2.cs</Link>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

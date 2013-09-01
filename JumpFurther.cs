@@ -7,10 +7,11 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 public class JumpFurther {
     public int furthest(int N, int badStep) {
-        int res = 0;
+        int res=0;
         for (int i = 0; i < N; i++)
         {
             res += i + 1;
@@ -24,7 +25,7 @@ public class JumpFurther {
     static List<int> cases = new List<int> { };
     public static void Test() {
         try  {
-            eq(0,(new JumpFurther()).furthest(1, 1),0);
+            eq(0,(new JumpFurther()).furthest(2, 2),3);
             eq(1,(new JumpFurther()).furthest(2, 1),2);
             eq(2,(new JumpFurther()).furthest(3, 3),5);
             eq(3,(new JumpFurther()).furthest(1313, 5858),862641);
