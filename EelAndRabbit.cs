@@ -7,39 +7,32 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 public class EelAndRabbit
 {
     public int getmax(int[] l, int[] t)
     {
         int res = 0;
-        // consolidate to c
-        HashSet<int> b = new HashSet<int>();
+        HashSet<int> a = new HashSet<int>();
         for (int i = 0; i < l.Length; i++)
         {
-            b.Add(t[i]);
-            b.Add(t[i] + l[i]);
+            a.Add(t[i]);
+            a.Add(l[i] + t[i]);
         }
-        int[] c = new int[b.Count];
-        b.CopyTo(c);
-        Array.Sort(c);
-        // for each x2
-        for (int i = 0; i < c.Length; i++)
+        var b = a.ToArray();
+        for (int j = 0; j < b.Length; j++)
         {
-            for (int j = i+1; j < c.Length; j++)
+            for (int k = j + 1; k < b.Length; k++)
             {
-        //check if candidates are catching
-        // mark catching on temp d
                 int ress = 0;
-                for (int k = 0; k < l.Length; k++)
+                for (int i = 0; i < l.Length; i++)
                 {
-                    if (c[i] >= t[k] && c[i] <= t[k] + l[k]
-                    || c[j] >= t[k] && c[j] <= t[k] + l[k])
+                    if ((l[i] + t[i] >= b[j] && t[i] <= b[j])
+                    || (l[i] + t[i] >= b[k] && t[i] <= b[k]))
                         ress++;
                 }
-                if (ress > res)
-                    res = ress;
-        // return max
+                res = Math.Max(res, ress);
             }
         }
         return res;

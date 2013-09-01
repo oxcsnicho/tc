@@ -41,8 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\SurveillanceSystem.cs">
-      <Link>SurveillanceSystem.cs</Link>
+    <Compile Include="..\EelAndRabbit.cs">
+      <Link>EelAndRabbit.cs</Link>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
