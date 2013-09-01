@@ -15,28 +15,26 @@ public class TheNumberGameDiv2
     {
         string a = A.ToString();
         string b = B.ToString();
-        var c = b.ToCharArray();
-        Array.Reverse(c);
-        string d = new string(c);
-
-        int r1 = calc(a, b, 0);
-        int r2 = calc(a, d, 1);
-
-        if (Math.Min(r1, r2) < 0)
-            return Math.Max(r1, r2);
-        else
-            return Math.Min(r1, r2);
-    }
-
-    private int calc(string a, string b, int p)
-    {
-        int k = a.IndexOf(b);
-        if (k == -1)
-            return -1;
-        else if (k == 0)
-            return a.Length - b.Length + p;
-        else
-            return a.Length - b.Length + 2 - p;
+        int res=a.Length+10;
+        if (a.Contains(b))
+        {
+            if (a.IndexOf(b) == 0)
+            {
+                res = a.Length - b.Length;
+            }
+            else
+            {
+                res = a.Length - b.Length + 2;
+            }
+        }
+        var bc = b.ToCharArray();
+        Array.Reverse(bc);
+        string bb = new string(bc);
+        if (a.Contains(bb))
+        {
+            res = Math.Min(res, a.Length - b.Length + 1);
+        }
+        return res == a.Length + 10 ? -1 : res ;
     }
 
     // BEGIN CUT HERE
@@ -45,7 +43,8 @@ public class TheNumberGameDiv2
     {
         try
         {
-            eq(0, (new TheNumberGameDiv2()).minimumMoves(15335, 53), 4);
+            eq(0, (new TheNumberGameDiv2()).minimumMoves(25, 5), 2);
+            eq(0, (new TheNumberGameDiv2()).minimumMoves(255335, 53), 5);
             eq(1, (new TheNumberGameDiv2()).minimumMoves(5162, 16), 4);
             eq(2, (new TheNumberGameDiv2()).minimumMoves(334, 12), -1);
             eq(3, (new TheNumberGameDiv2()).minimumMoves(218181918, 9181), 6);
