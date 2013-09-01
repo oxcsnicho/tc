@@ -7,63 +7,61 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 public class GooseInZooDivTwo
 {
-    string[] f;
-    bool[,] g;
-    int m, n;
-    int d;
-
-    public int count(string[] ff, int dist)
+    public int count(string[] field, int dist)
     {
+        map = field;
+        mark = new bool[map.Length, map[0].Length];
         int res = 0;
-        f = ff;
-        m = f.Length;
-        n = f[0].Length;
-        d = dist;
-        g = new bool[m, n];
-
-        for (int i = 0; i < f.Length; i++)
+        for (int i = 0; i < map.Length; i++)
         {
-            for (int j = 0; j < f[i].Length; j++)
+            for (int j = 0; j < map[0].Length; j++)
             {
-                if (g[i, j] == true || f[i][j] == '.')
-                    continue;
-                setg(i, j);
-                res++;
+                if (map[i][j] == 'v' && mark[i, j] != true)
+                {
+                    dfsmark(i, j, dist);
+                    res++;
+                }
             }
         }
-
-        // convert res to result
-        long ress = 1;
-        while (res > 0)
+        int ress = 1;
+        for (int i = 0; i < res; i++)
         {
             ress *= 2;
-            ress %= 1000000007L;
-            res--;
+            ress %= 1000000007;
         }
-        return (int)ress - 1;
+        return ress - 1;
     }
 
-    void setg(int a, int b)
+    string[] map;
+    bool[,] mark;
+    void dfsmark(int i, int j, int d)
     {
-        if (!(a >= 0 && b >= 0 && a < m && b < n))
+        if (i < 0 || j < 0
+            || i >= map.Length || j >= map[0].Length)
             return;
-        if (f[a][b] == '.' || g[a,b] == true)
+        if (mark[i, j] == true)
+            return;
+        if (map[i][j] != 'v')
             return;
 
-        g[a, b] = true;
-
-        for (int k = 1; k <= d; k++)
+        mark[i, j] = true;
+        for (int k = 0; k <= d; k++)
         {
-            for (int l = 0; l <= k; l++)
+            for (int l = 0; l <= d; l++)
             {
-                setg(a + l, b + k - l);
-                setg(a + l, b - k + l);
-                setg(a - l, b + k - l);
-                setg(a - l, b - k + l);
+                if (k + l <= d)
+                {
+                    dfsmark(i + k, j + l, d);
+                    dfsmark(i - k, j + l, d);
+                    dfsmark(i - k, j - l, d);
+                    dfsmark(i + k, j - l, d);
+                }
             }
+
         }
     }
 
@@ -76,6 +74,7 @@ public class GooseInZooDivTwo
             eq(0, (new GooseInZooDivTwo()).count(new string[] { "vvv" }, 0), 7);
             eq(1, (new GooseInZooDivTwo()).count(new string[] { "." }, 100), 0);
             eq(2, (new GooseInZooDivTwo()).count(new string[] { "vvv" }, 1), 1);
+            eq(2, (new GooseInZooDivTwo()).count(new string[] { "v..", "...", "..v" }, 1), 3);
             eq(3, (new GooseInZooDivTwo()).count(new string[] {"v.v..................v............................"
                ,".v......v..................v.....................v"
                ,"..v.....v....v.........v...............v......v..."
