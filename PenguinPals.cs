@@ -5,57 +5,73 @@ using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
-public class PiecewiseLinearFunctionDiv2
+public class PenguinPals
 {
-    public int[] countSolutions(int[] Y, int[] query)
+    public int findMaximumMatching(string c)
     {
-        int[] res = new int[query.Length];
-        Array.Clear(res, 0, res.Length);
-        for (int j = 0; j < query.Length; j++)
+        memo = new Dictionary<string, int>();
+        int res =  F(c);
+        return res;
+    }
+
+    Dictionary<string, int> memo;
+    int F(string c)
+    {
+        if (memo.ContainsKey(c))
+            return memo[c];
+        if (c.Length < 2)
+            return 0;
+        if (c.Length == 2)
+            return c[0] == c[1] ? 1 : 0;
+
+        int res = 0;
+        for (int i = 1; i < c.Length; i++)
         {
-            var q = query[j];
-            for (int i = 0; i < Y.Length - 1; i++)
+            if (c[i] == c[0])
             {
-                if (Y[i] == Y[i + 1])
-                {
-                    if (Y[i] == q)
-                    {
-                        res[j] = -1;
-                        break;
-                    }
-                }
-                if (Y[i] == q
-                    || Y[i] <= q && Y[i + 1] > q
-                    || Y[i] >= q && Y[i + 1] < q)
-                    res[j]++;
+                if(i==1)
+                res = Math.Max(res, 1 + F(c.Substring(i + 1, c.Length - i - 1)));
+                else if (i==c.Length-1)
+                res = Math.Max(res, 1 + F(c.Substring(1, i-1)));
+                else
+                res = Math.Max(res, 1 + F(c.Substring(1, i-1)) + F(c.Substring(i + 1, c.Length - i - 1)));
             }
-            if (res[j]!=-1 && Y[Y.Length - 1] == q)
-                res[j]++;
         }
+        res = Math.Max(res, F(c.Substring(1, c.Length - 1)));
+        memo[c] = res;
         return res;
     }
 
     // BEGIN CUT HERE
+    static List<int> cases = new List<int> { };
     public static void Test()
     {
         try
         {
-            eq(0, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 1, 4, -1, 2 }, new int[] { -2, -1, 0, 1 }), new int[] { 0, 1, 2, 3 });
-            eq(1, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 0, 0 }, new int[] { -1, 0, 1 }), new int[] { 0, -1, 0 });
-            eq(2, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 2, 4, 8, 0, 3, -6, 10 }, new int[] { 0, 1, 2, 3, 4, 0, 65536 }), new int[] { 3, 4, 5, 4, 3, 3, 0 });
-            eq(3, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { -178080289, -771314989, -237251715, -949949900, -437883156, -835236871, -316363230, -929746634, -671700962 }
-               , new int[] { -673197622, -437883156, -251072978, 221380900, -771314989, -949949900, -910604034, -671700962, -929746634, -316363230 }), new int[] { 8, 6, 3, 0, 7, 1, 4, 8, 3, 4 });
+            eq(0, (new PenguinPals()).findMaximumMatching("RRBRBRBB"), 3);
+            eq(1, (new PenguinPals()).findMaximumMatching("RRRR"), 2);
+            eq(2, (new PenguinPals()).findMaximumMatching("BBBBB"), 2);
+            eq(3, (new PenguinPals()).findMaximumMatching("RBRBRBRBR"), 4);
+            eq(4, (new PenguinPals()).findMaximumMatching("RRRBRBRBRBRB"), 5);
+            eq(5, (new PenguinPals()).findMaximumMatching("R"), 0);
+            eq(6, (new PenguinPals()).findMaximumMatching("RBRRBBRB"), 3);
+            eq(7, (new PenguinPals()).findMaximumMatching("RBRBBRBRB"), 4);
         }
         catch (Exception exx)
         {
-            Debug.WriteLine(exx);
-            Debug.WriteLine(exx.StackTrace);
+            System.Console.WriteLine(exx);
+            System.Console.WriteLine(exx.StackTrace);
         }
     }
     private static void eq(int n, object have, object need)
     {
+        if (cases != null && cases.Count > 0)
+            if (!cases.Exists((a) => a == n))
+                return;
         if (eq(have, need))
         {
             Debug.WriteLine("Case " + n + " passed.");
@@ -71,6 +87,9 @@ public class PiecewiseLinearFunctionDiv2
     }
     private static void eq(int n, Array have, Array need)
     {
+        if (cases != null && cases.Count > 0)
+            if (!cases.Exists((a) => a == n))
+                return;
         if (have == null || have.Length != need.Length)
         {
             Debug.WriteLine("Case " + n + " failed: returned " + have.Length + " elements; expected " + need.Length + " elements.");
@@ -135,3 +154,4 @@ public class PiecewiseLinearFunctionDiv2
     }
     // END CUT HERE
 }
+

@@ -5,57 +5,75 @@ using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
-public class PiecewiseLinearFunctionDiv2
+public class NextOrPrev
 {
-    public int[] countSolutions(int[] Y, int[] query)
+    public int getMinimum(int nextCost, int prevCost, string start, string goal)
     {
-        int[] res = new int[query.Length];
-        Array.Clear(res, 0, res.Length);
-        for (int j = 0; j < query.Length; j++)
+        int res = 0;
+        for (int i = 0; i < start.Length; i++)
         {
-            var q = query[j];
-            for (int i = 0; i < Y.Length - 1; i++)
+            for (int j = i + 1; j < goal.Length; j++)
             {
-                if (Y[i] == Y[i + 1])
+#if false
+                if ((Math.Min(start[i], goal[i]) < Math.Min(start[j], goal[j]) &&
+                Math.Max(start[i], goal[i]) > Math.Min(start[j], goal[j]) &&
+                Math.Max(start[i], goal[i]) < Math.Max(start[j], goal[j]))
+                ||
+                (Math.Min(start[i], goal[i]) > Math.Min(start[j], goal[j]) &&
+                Math.Max(start[i], goal[i]) < Math.Min(start[j], goal[j]) &&
+                Math.Max(start[i], goal[i]) > Math.Max(start[j], goal[j])))
+#endif
+                if (start[i] < goal[j] && goal[j] < goal[i] && goal[i] < start[j]
+                || start[i] > goal[j] && goal[j] > goal[i] && goal[i] > start[j]
+                || start[i] > start[j] && goal[i] < goal[j]
+                || start[j] > start[i] && goal[j] < goal[i]
+                    )
                 {
-                    if (Y[i] == q)
-                    {
-                        res[j] = -1;
-                        break;
-                    }
+                    // BEGIN CUT HERE
+                    print(i.ToString());
+                    print(j.ToString());
+                    // END CUT HERE
+                    return -1;
                 }
-                if (Y[i] == q
-                    || Y[i] <= q && Y[i + 1] > q
-                    || Y[i] >= q && Y[i + 1] < q)
-                    res[j]++;
+
             }
-            if (res[j]!=-1 && Y[Y.Length - 1] == q)
-                res[j]++;
+        }
+        for (int i = 0; i < start.Length; i++)
+        {
+            res += start[i] - goal[i] > 0 ? prevCost * (start[i] - goal[i]) : nextCost * (goal[i] - start[i]);
         }
         return res;
     }
 
     // BEGIN CUT HERE
+    static List<int> cases = new List<int> { };
     public static void Test()
     {
         try
         {
-            eq(0, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 1, 4, -1, 2 }, new int[] { -2, -1, 0, 1 }), new int[] { 0, 1, 2, 3 });
-            eq(1, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 0, 0 }, new int[] { -1, 0, 1 }), new int[] { 0, -1, 0 });
-            eq(2, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 2, 4, 8, 0, 3, -6, 10 }, new int[] { 0, 1, 2, 3, 4, 0, 65536 }), new int[] { 3, 4, 5, 4, 3, 3, 0 });
-            eq(3, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { -178080289, -771314989, -237251715, -949949900, -437883156, -835236871, -316363230, -929746634, -671700962 }
-               , new int[] { -673197622, -437883156, -251072978, 221380900, -771314989, -949949900, -910604034, -671700962, -929746634, -316363230 }), new int[] { 8, 6, 3, 0, 7, 1, 4, 8, 3, 4 });
+            eq(0, (new NextOrPrev()).getMinimum(5, 8, "ae", "bc"), 21);
+            eq(1, (new NextOrPrev()).getMinimum(5, 8, "ae", "cb"), -1);
+            eq(2, (new NextOrPrev()).getMinimum(1, 1, "srm", "srm"), 0);
+            eq(3, (new NextOrPrev()).getMinimum(10, 1, "acb", "bdc"), 30);
+            eq(4, (new NextOrPrev()).getMinimum(10, 1, "zyxw", "vuts"), 16);
+            eq(5, (new NextOrPrev()).getMinimum(563, 440, "ptrbgcnlaizo", "rtscedkiahul"), 10295);
+            eq(6, (new NextOrPrev()).getMinimum(126, 311, "yovlkwpjgsna", "zpwnkytjisob"), -1);
         }
         catch (Exception exx)
         {
-            Debug.WriteLine(exx);
-            Debug.WriteLine(exx.StackTrace);
+            System.Console.WriteLine(exx);
+            System.Console.WriteLine(exx.StackTrace);
         }
     }
     private static void eq(int n, object have, object need)
     {
+        if (cases != null && cases.Count > 0)
+            if (!cases.Exists((a) => a == n))
+                return;
         if (eq(have, need))
         {
             Debug.WriteLine("Case " + n + " passed.");
@@ -71,6 +89,9 @@ public class PiecewiseLinearFunctionDiv2
     }
     private static void eq(int n, Array have, Array need)
     {
+        if (cases != null && cases.Count > 0)
+            if (!cases.Exists((a) => a == n))
+                return;
         if (have == null || have.Length != need.Length)
         {
             Debug.WriteLine("Case " + n + " failed: returned " + have.Length + " elements; expected " + need.Length + " elements.");
@@ -135,3 +156,4 @@ public class PiecewiseLinearFunctionDiv2
     }
     // END CUT HERE
 }
+

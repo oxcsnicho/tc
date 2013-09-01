@@ -5,57 +5,61 @@ using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
-public class PiecewiseLinearFunctionDiv2
+public class FoxAndMp3Easy
 {
-    public int[] countSolutions(int[] Y, int[] query)
+    public string[] playList(int n)
     {
-        int[] res = new int[query.Length];
-        Array.Clear(res, 0, res.Length);
-        for (int j = 0; j < query.Length; j++)
+        res = new List<string>();
+        for (int i = 1; i < 10; i++)
         {
-            var q = query[j];
-            for (int i = 0; i < Y.Length - 1; i++)
-            {
-                if (Y[i] == Y[i + 1])
-                {
-                    if (Y[i] == q)
-                    {
-                        res[j] = -1;
-                        break;
-                    }
-                }
-                if (Y[i] == q
-                    || Y[i] <= q && Y[i + 1] > q
-                    || Y[i] >= q && Y[i + 1] < q)
-                    res[j]++;
-            }
-            if (res[j]!=-1 && Y[Y.Length - 1] == q)
-                res[j]++;
+            dfs(i, n);
         }
-        return res;
+        return res.ToArray();
+    }
+
+    List<string> res;
+    void dfs(int n, int N)
+    {
+        if (n > N)
+            return;
+        if (res.Count >= 50)
+            return;
+
+        res.Add(n.ToString() + ".mp3");
+
+        for (int i = 0; i < 10; i++)
+        {
+            dfs(n * 10 + i, N);
+        }
     }
 
     // BEGIN CUT HERE
+    static List<int> cases = new List<int> { };
     public static void Test()
     {
         try
         {
-            eq(0, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 1, 4, -1, 2 }, new int[] { -2, -1, 0, 1 }), new int[] { 0, 1, 2, 3 });
-            eq(1, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 0, 0 }, new int[] { -1, 0, 1 }), new int[] { 0, -1, 0 });
-            eq(2, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 2, 4, 8, 0, 3, -6, 10 }, new int[] { 0, 1, 2, 3, 4, 0, 65536 }), new int[] { 3, 4, 5, 4, 3, 3, 0 });
-            eq(3, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { -178080289, -771314989, -237251715, -949949900, -437883156, -835236871, -316363230, -929746634, -671700962 }
-               , new int[] { -673197622, -437883156, -251072978, 221380900, -771314989, -949949900, -910604034, -671700962, -929746634, -316363230 }), new int[] { 8, 6, 3, 0, 7, 1, 4, 8, 3, 4 });
+            eq(0, (new FoxAndMp3Easy()).playList(3), new string[] { "1.mp3", "2.mp3", "3.mp3" });
+            eq(1, (new FoxAndMp3Easy()).playList(10), new string[] { "1.mp3", "10.mp3", "2.mp3", "3.mp3", "4.mp3", "5.mp3", "6.mp3", "7.mp3", "8.mp3", "9.mp3" });
+            eq(2, (new FoxAndMp3Easy()).playList(16), new string[] { "1.mp3", "10.mp3", "11.mp3", "12.mp3", "13.mp3", "14.mp3", "15.mp3", "16.mp3", "2.mp3", "3.mp3", "4.mp3", "5.mp3", "6.mp3", "7.mp3", "8.mp3", "9.mp3" });
+            eq(3, (new FoxAndMp3Easy()).playList(32), new string[] { "1.mp3", "10.mp3", "11.mp3", "12.mp3", "13.mp3", "14.mp3", "15.mp3", "16.mp3", "17.mp3", "18.mp3", "19.mp3", "2.mp3", "20.mp3", "21.mp3", "22.mp3", "23.mp3", "24.mp3", "25.mp3", "26.mp3", "27.mp3", "28.mp3", "29.mp3", "3.mp3", "30.mp3", "31.mp3", "32.mp3", "4.mp3", "5.mp3", "6.mp3", "7.mp3", "8.mp3", "9.mp3" });
+            eq(4, (new FoxAndMp3Easy()).playList(109), new string[] { "1.mp3", "10.mp3", "100.mp3", "101.mp3", "102.mp3", "103.mp3", "104.mp3", "105.mp3", "106.mp3", "107.mp3", "108.mp3", "109.mp3", "11.mp3", "12.mp3", "13.mp3", "14.mp3", "15.mp3", "16.mp3", "17.mp3", "18.mp3", "19.mp3", "2.mp3", "20.mp3", "21.mp3", "22.mp3", "23.mp3", "24.mp3", "25.mp3", "26.mp3", "27.mp3", "28.mp3", "29.mp3", "3.mp3", "30.mp3", "31.mp3", "32.mp3", "33.mp3", "34.mp3", "35.mp3", "36.mp3", "37.mp3", "38.mp3", "39.mp3", "4.mp3", "40.mp3", "41.mp3", "42.mp3", "43.mp3", "44.mp3", "45.mp3" });
         }
         catch (Exception exx)
         {
-            Debug.WriteLine(exx);
-            Debug.WriteLine(exx.StackTrace);
+            System.Console.WriteLine(exx);
+            System.Console.WriteLine(exx.StackTrace);
         }
     }
     private static void eq(int n, object have, object need)
     {
+        if (cases != null && cases.Count > 0)
+            if (!cases.Exists((a) => a == n))
+                return;
         if (eq(have, need))
         {
             Debug.WriteLine("Case " + n + " passed.");
@@ -71,6 +75,9 @@ public class PiecewiseLinearFunctionDiv2
     }
     private static void eq(int n, Array have, Array need)
     {
+        if (cases != null && cases.Count > 0)
+            if (!cases.Exists((a) => a == n))
+                return;
         if (have == null || have.Length != need.Length)
         {
             Debug.WriteLine("Case " + n + " failed: returned " + have.Length + " elements; expected " + need.Length + " elements.");
@@ -135,3 +142,4 @@ public class PiecewiseLinearFunctionDiv2
     }
     // END CUT HERE
 }
+

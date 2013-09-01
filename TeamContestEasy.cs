@@ -7,42 +7,52 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
-public class EelAndRabbit
+public class TeamContestEasy
 {
-    public int getmax(int[] l, int[] t)
+    public int worstRank(int[] ss)
     {
+        int A = ss[0] + ss[1] + ss[2] - Math.Min(ss[0], Math.Min(ss[1], ss[2]));
+        int[] s = new int[ss.Length - 3];
+        Array.Copy(ss, 3, s, 0, s.Length);
+        int[] s1 = Array.FindAll(s, (x) => x > A / 2.0);
+        int[] s2 = Array.FindAll(s, (x) => x <= A / 2.0);
+        Array.Sort(s1);
+        Array.Sort(s2);
+        Array.Reverse(s2);
+        // BEGIN CUT HERE
+        print(ss);
+        print(s1);
+        print(s2);
+        // END CUT HERE
+        // split into s1 and s2
+        // sort s1
+
         int res = 0;
-        // consolidate to c
-        HashSet<int> b = new HashSet<int>();
-        for (int i = 0; i < l.Length; i++)
+        int i = 0;
+        int j = 0;
+        while (i < s1.Length && j < s2.Length)
         {
-            b.Add(t[i]);
-            b.Add(t[i] + l[i]);
-        }
-        int[] c = new int[b.Count];
-        b.CopyTo(c);
-        Array.Sort(c);
-        // for each x2
-        for (int i = 0; i < c.Length; i++)
-        {
-            for (int j = i+1; j < c.Length; j++)
+            int b = A - s1[i];
+            if (b >= s2[j])
+                i++;
+            else
             {
-        //check if candidates are catching
-        // mark catching on temp d
-                int ress = 0;
-                for (int k = 0; k < l.Length; k++)
-                {
-                    if (c[i] >= t[k] && c[i] <= t[k] + l[k]
-                    || c[j] >= t[k] && c[j] <= t[k] + l[k])
-                        ress++;
-                }
-                if (ress > res)
-                    res = ress;
-        // return max
+                // BEGIN CUT HERE
+                print(s1[i].ToString());
+                print(s2[j].ToString());
+                // END CUT HERE
+                j++;
+                i++;
+                res++;
             }
         }
-        return res;
+        // foreach s1, match s1 with some s2
+        if ((res + (s1.Length - res) / 2) * 3 > s.Length)
+            return s.Length / 3 + 1;
+        else
+            return (res + (s1.Length - res) / 2) + 1;
     }
 
     // BEGIN CUT HERE
@@ -51,10 +61,17 @@ public class EelAndRabbit
     {
         try
         {
-            eq(0, (new EelAndRabbit()).getmax(new int[] { 2, 4, 3, 2, 2, 1, 10 }, new int[] { 2, 6, 3, 7, 0, 2, 0 }), 6);
-            eq(1, (new EelAndRabbit()).getmax(new int[] { 1, 1, 1 }, new int[] { 2, 0, 4 }), 2);
-            eq(2, (new EelAndRabbit()).getmax(new int[] { 1 }, new int[] { 1 }), 1);
-            eq(3, (new EelAndRabbit()).getmax(new int[] { 8, 2, 1, 10, 8, 6, 3, 1, 2, 5 }, new int[] { 17, 27, 26, 11, 1, 27, 23, 12, 11, 13 }), 7);
+            eq(0, (new TeamContestEasy()).worstRank(new int[] { 28481, 557292, 14188, 61649, 510253, 509530, 749211, 171570, 441589 }), 3);
+            eq(1, (new TeamContestEasy()).worstRank(new int[] { 5, 7, 3 }), 1);
+            eq(2, (new TeamContestEasy()).worstRank(new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }), 1);
+            eq(3, (new TeamContestEasy()).worstRank(new int[] { 2, 2, 1, 1, 3, 1, 3, 2, 1, 3, 1, 2, 1, 2, 1 }
+               ), 4);
+            eq(4, (new TeamContestEasy()).worstRank(new int[] { 45, 72, 10, 42, 67, 51, 33, 21, 8, 51, 17, 72 }
+               ), 3);
+            eq(5, (new TeamContestEasy()).worstRank(new int[] {570466,958327,816467,17,403,953808,734850,5824,917784,921731,161921,1734,823437,3218,81,932681,2704,981643,1232,475,873323,6558,45660,1813,4714,224,
+               32301,28081,6728,17055,561,15146,842613,5559,1860,783,989,2811,20664,112531,1933,866794,805528,53821,2465,137385,39,2007}), 6);
+            eq(6, (new TeamContestEasy()).worstRank(new int[] {610297,849870,523999,6557,976530,731458,7404,795100,147040,110947,159692,40785,4949,2903,1688,37278,620703,28156,16823,1159,12132,971379,5916,1159,988589,
+               12215,133,1490,911360,920059,544070,40249,514852,852,745070,1105,715897,714696,589133,698317,5683,631612,16453,101000,764881,101,2053,754661}), 10);
         }
         catch (Exception exx)
         {

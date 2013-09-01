@@ -5,57 +5,68 @@ using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
-public class PiecewiseLinearFunctionDiv2
+public class AlternateColors
 {
-    public int[] countSolutions(int[] Y, int[] query)
+    public string getColor(long r, long g, long b, long k)
     {
-        int[] res = new int[query.Length];
-        Array.Clear(res, 0, res.Length);
-        for (int j = 0; j < query.Length; j++)
+        string[] res = new string[] { "RED", "GREEN", "BLUE" };
+        long[] a = new long[] { r, g, b };
+
+        for (int i = 3; i >1; i--)
         {
-            var q = query[j];
-            for (int i = 0; i < Y.Length - 1; i++)
+            int t = 0;
+            for (int j = 1; j < i; j++)
             {
-                if (Y[i] == Y[i + 1])
-                {
-                    if (Y[i] == q)
-                    {
-                        res[j] = -1;
-                        break;
-                    }
-                }
-                if (Y[i] == q
-                    || Y[i] <= q && Y[i + 1] > q
-                    || Y[i] >= q && Y[i + 1] < q)
-                    res[j]++;
+                if (a[j] < a[t])
+                    t = j;
             }
-            if (res[j]!=-1 && Y[Y.Length - 1] == q)
-                res[j]++;
+
+            if ((k + i-1) / i <= a[t])
+                return res[(int)((k + i - 1) % i)];
+
+            long tmp = a[t];
+            k -= a[t] * i;
+            for (int j = 0; j < i; j++)
+            {
+                a[j] -= tmp;
+            }
+            for (int j = t; j < i-1; j++)
+            {
+                a[j] = a[j + 1];
+                res[j] = res[j + 1];
+            }
         }
-        return res;
+        return res[0];
     }
 
     // BEGIN CUT HERE
+    static List<int> cases = new List<int> { };
     public static void Test()
     {
         try
         {
-            eq(0, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 1, 4, -1, 2 }, new int[] { -2, -1, 0, 1 }), new int[] { 0, 1, 2, 3 });
-            eq(1, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 0, 0 }, new int[] { -1, 0, 1 }), new int[] { 0, -1, 0 });
-            eq(2, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 2, 4, 8, 0, 3, -6, 10 }, new int[] { 0, 1, 2, 3, 4, 0, 65536 }), new int[] { 3, 4, 5, 4, 3, 3, 0 });
-            eq(3, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { -178080289, -771314989, -237251715, -949949900, -437883156, -835236871, -316363230, -929746634, -671700962 }
-               , new int[] { -673197622, -437883156, -251072978, 221380900, -771314989, -949949900, -910604034, -671700962, -929746634, -316363230 }), new int[] { 8, 6, 3, 0, 7, 1, 4, 8, 3, 4 });
+            eq(5, (new AlternateColors()).getColor(17964018705L, 65273511246L, 31105494141L, 50314587302L), "GREEN");
+            eq(0, (new AlternateColors()).getColor(1L, 1L, 1L, 3L), "BLUE");
+            eq(1, (new AlternateColors()).getColor(3L, 4L, 5L, 4L), "RED");
+            eq(2, (new AlternateColors()).getColor(7L, 7L, 1L, 7L), "GREEN");
+            eq(3, (new AlternateColors()).getColor(1000000000000L, 1L, 1L, 1000000000002L), "RED");
+            eq(4, (new AlternateColors()).getColor(653L, 32L, 1230L, 556L), "BLUE");
         }
         catch (Exception exx)
         {
-            Debug.WriteLine(exx);
-            Debug.WriteLine(exx.StackTrace);
+            System.Console.WriteLine(exx);
+            System.Console.WriteLine(exx.StackTrace);
         }
     }
     private static void eq(int n, object have, object need)
     {
+        if (cases != null && cases.Count > 0)
+            if (!cases.Exists((a) => a == n))
+                return;
         if (eq(have, need))
         {
             Debug.WriteLine("Case " + n + " passed.");
@@ -71,6 +82,9 @@ public class PiecewiseLinearFunctionDiv2
     }
     private static void eq(int n, Array have, Array need)
     {
+        if (cases != null && cases.Count > 0)
+            if (!cases.Exists((a) => a == n))
+                return;
         if (have == null || have.Length != need.Length)
         {
             Debug.WriteLine("Case " + n + " failed: returned " + have.Length + " elements; expected " + need.Length + " elements.");
@@ -135,3 +149,4 @@ public class PiecewiseLinearFunctionDiv2
     }
     // END CUT HERE
 }
+

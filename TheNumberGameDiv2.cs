@@ -5,57 +5,63 @@ using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
-public class PiecewiseLinearFunctionDiv2
+public class TheNumberGameDiv2
 {
-    public int[] countSolutions(int[] Y, int[] query)
+    public int minimumMoves(int A, int B)
     {
-        int[] res = new int[query.Length];
-        Array.Clear(res, 0, res.Length);
-        for (int j = 0; j < query.Length; j++)
-        {
-            var q = query[j];
-            for (int i = 0; i < Y.Length - 1; i++)
-            {
-                if (Y[i] == Y[i + 1])
-                {
-                    if (Y[i] == q)
-                    {
-                        res[j] = -1;
-                        break;
-                    }
-                }
-                if (Y[i] == q
-                    || Y[i] <= q && Y[i + 1] > q
-                    || Y[i] >= q && Y[i + 1] < q)
-                    res[j]++;
-            }
-            if (res[j]!=-1 && Y[Y.Length - 1] == q)
-                res[j]++;
-        }
-        return res;
+        string a = A.ToString();
+        string b = B.ToString();
+        var c = b.ToCharArray();
+        Array.Reverse(c);
+        string d = new string(c);
+
+        int r1 = calc(a, b, 0);
+        int r2 = calc(a, d, 1);
+
+        if (Math.Min(r1, r2) < 0)
+            return Math.Max(r1, r2);
+        else
+            return Math.Min(r1, r2);
+    }
+
+    private int calc(string a, string b, int p)
+    {
+        int k = a.IndexOf(b);
+        if (k == -1)
+            return -1;
+        else if (k == 0)
+            return a.Length - b.Length + p;
+        else
+            return a.Length - b.Length + 2 - p;
     }
 
     // BEGIN CUT HERE
+    static List<int> cases = new List<int> { };
     public static void Test()
     {
         try
         {
-            eq(0, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 1, 4, -1, 2 }, new int[] { -2, -1, 0, 1 }), new int[] { 0, 1, 2, 3 });
-            eq(1, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 0, 0 }, new int[] { -1, 0, 1 }), new int[] { 0, -1, 0 });
-            eq(2, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 2, 4, 8, 0, 3, -6, 10 }, new int[] { 0, 1, 2, 3, 4, 0, 65536 }), new int[] { 3, 4, 5, 4, 3, 3, 0 });
-            eq(3, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { -178080289, -771314989, -237251715, -949949900, -437883156, -835236871, -316363230, -929746634, -671700962 }
-               , new int[] { -673197622, -437883156, -251072978, 221380900, -771314989, -949949900, -910604034, -671700962, -929746634, -316363230 }), new int[] { 8, 6, 3, 0, 7, 1, 4, 8, 3, 4 });
+            eq(0, (new TheNumberGameDiv2()).minimumMoves(15335, 53), 4);
+            eq(1, (new TheNumberGameDiv2()).minimumMoves(5162, 16), 4);
+            eq(2, (new TheNumberGameDiv2()).minimumMoves(334, 12), -1);
+            eq(3, (new TheNumberGameDiv2()).minimumMoves(218181918, 9181), 6);
+            eq(4, (new TheNumberGameDiv2()).minimumMoves(9798147, 79817), -1);
         }
         catch (Exception exx)
         {
-            Debug.WriteLine(exx);
-            Debug.WriteLine(exx.StackTrace);
+            System.Console.WriteLine(exx);
+            System.Console.WriteLine(exx.StackTrace);
         }
     }
     private static void eq(int n, object have, object need)
     {
+        if (cases != null && cases.Count > 0)
+            if (!cases.Exists((a) => a == n))
+                return;
         if (eq(have, need))
         {
             Debug.WriteLine("Case " + n + " passed.");
@@ -71,6 +77,9 @@ public class PiecewiseLinearFunctionDiv2
     }
     private static void eq(int n, Array have, Array need)
     {
+        if (cases != null && cases.Count > 0)
+            if (!cases.Exists((a) => a == n))
+                return;
         if (have == null || have.Length != need.Length)
         {
             Debug.WriteLine("Case " + n + " failed: returned " + have.Length + " elements; expected " + need.Length + " elements.");
@@ -135,3 +144,4 @@ public class PiecewiseLinearFunctionDiv2
     }
     // END CUT HERE
 }
+

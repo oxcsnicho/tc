@@ -7,42 +7,45 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
-public class EelAndRabbit
+public class BallsSeparating
 {
-    public int getmax(int[] l, int[] t)
+    public int minOperations(int[] red, int[] green, int[] blue)
     {
-        int res = 0;
-        // consolidate to c
-        HashSet<int> b = new HashSet<int>();
-        for (int i = 0; i < l.Length; i++)
+        if (red.Length < 3)
+            return -1;
+
+        int ress = -1;
+        for (int i = 0; i < red.Length; i++)
         {
-            b.Add(t[i]);
-            b.Add(t[i] + l[i]);
-        }
-        int[] c = new int[b.Count];
-        b.CopyTo(c);
-        Array.Sort(c);
-        // for each x2
-        for (int i = 0; i < c.Length; i++)
-        {
-            for (int j = i+1; j < c.Length; j++)
+            for (int j = 0; j < red.Length; j++)
             {
-        //check if candidates are catching
-        // mark catching on temp d
-                int ress = 0;
-                for (int k = 0; k < l.Length; k++)
-                {
-                    if (c[i] >= t[k] && c[i] <= t[k] + l[k]
-                    || c[j] >= t[k] && c[j] <= t[k] + l[k])
-                        ress++;
-                }
-                if (ress > res)
-                    res = ress;
-        // return max
+                if (j != i)
+                    for (int k = 0; k < red.Length; k++)
+                    {
+                        if (k != i && j != k)
+                        {
+                            int res = 0;
+                            for (int l = 0; l < red.Length; l++)
+                            {
+                                if (l == i)
+                                    res += green[l] + blue[l];
+                                else if (l == j)
+                                    res += red[l] + blue[l];
+                                else if (l == k)
+                                    res += green[l] + red[l];
+                                else
+                                    res += red[l] + blue[l] + green[l] - Math.Max(red[l], Math.Max(green[l], blue[l]));
+                            }
+                            if (ress == -1 || res < ress)
+                                ress = res;
+                        }
+                    }
             }
         }
-        return res;
+
+        return ress;
     }
 
     // BEGIN CUT HERE
@@ -51,10 +54,14 @@ public class EelAndRabbit
     {
         try
         {
-            eq(0, (new EelAndRabbit()).getmax(new int[] { 2, 4, 3, 2, 2, 1, 10 }, new int[] { 2, 6, 3, 7, 0, 2, 0 }), 6);
-            eq(1, (new EelAndRabbit()).getmax(new int[] { 1, 1, 1 }, new int[] { 2, 0, 4 }), 2);
-            eq(2, (new EelAndRabbit()).getmax(new int[] { 1 }, new int[] { 1 }), 1);
-            eq(3, (new EelAndRabbit()).getmax(new int[] { 8, 2, 1, 10, 8, 6, 3, 1, 2, 5 }, new int[] { 17, 27, 26, 11, 1, 27, 23, 12, 11, 13 }), 7);
+            eq(0, (new BallsSeparating()).minOperations(
+                new int[] { 852057, 889141, 662939, 340220 },
+                new int[] { 600081, 390298, 376707, 372199 },
+                new int[] { 435097, 40266, 145590, 505103 }), 2952434);
+            eq(1, (new BallsSeparating()).minOperations(new int[] { 5 }, new int[] { 6 }, new int[] { 8 }), -1);
+            eq(2, (new BallsSeparating()).minOperations(new int[] { 4, 6, 5, 7 }, new int[] { 7, 4, 6, 3 }, new int[] { 6, 5, 3, 8 }), 37);
+            eq(3, (new BallsSeparating()).minOperations(new int[] { 7, 12, 9, 9, 7 }, new int[] { 7, 10, 8, 8, 9 }, new int[] { 8, 9, 5, 6, 13 }), 77);
+            eq(4, (new BallsSeparating()).minOperations(new int[] { 842398, 491273, 958925, 849859, 771363, 67803, 184892, 391907, 256150, 75799 }, new int[] { 268944, 342402, 894352, 228640, 903885, 908656, 414271, 292588, 852057, 889141 }, new int[] { 662939, 340220, 600081, 390298, 376707, 372199, 435097, 40266, 145590, 505103 }), 7230607);
         }
         catch (Exception exx)
         {

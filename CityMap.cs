@@ -5,57 +5,69 @@ using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
-public class PiecewiseLinearFunctionDiv2
+public class CityMap
 {
-    public int[] countSolutions(int[] Y, int[] query)
+    public string getLegend(string[] cityMap, int[] POIs)
     {
-        int[] res = new int[query.Length];
-        Array.Clear(res, 0, res.Length);
-        for (int j = 0; j < query.Length; j++)
+        string res = "";
+        Dictionary<char, int> a = new Dictionary<char, int>();
+        foreach (var item in cityMap)
         {
-            var q = query[j];
-            for (int i = 0; i < Y.Length - 1; i++)
+            foreach (var i in item)
             {
-                if (Y[i] == Y[i + 1])
-                {
-                    if (Y[i] == q)
-                    {
-                        res[j] = -1;
-                        break;
-                    }
-                }
-                if (Y[i] == q
-                    || Y[i] <= q && Y[i + 1] > q
-                    || Y[i] >= q && Y[i + 1] < q)
-                    res[j]++;
+                if (i != '.')
+                    a[i] = a.ContainsKey(i) ? a[i] + 1 : 1;
             }
-            if (res[j]!=-1 && Y[Y.Length - 1] == q)
-                res[j]++;
+        }
+        for (int i = 0; i < POIs.Length; i++)
+        {
+            res += a.FirstOrDefault((x) => x.Value == POIs[i]).Key;
         }
         return res;
     }
 
     // BEGIN CUT HERE
+    static List<int> cases = new List<int> { };
     public static void Test()
     {
         try
         {
-            eq(0, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 1, 4, -1, 2 }, new int[] { -2, -1, 0, 1 }), new int[] { 0, 1, 2, 3 });
-            eq(1, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 0, 0 }, new int[] { -1, 0, 1 }), new int[] { 0, -1, 0 });
-            eq(2, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { 2, 4, 8, 0, 3, -6, 10 }, new int[] { 0, 1, 2, 3, 4, 0, 65536 }), new int[] { 3, 4, 5, 4, 3, 3, 0 });
-            eq(3, (new PiecewiseLinearFunctionDiv2()).countSolutions(new int[] { -178080289, -771314989, -237251715, -949949900, -437883156, -835236871, -316363230, -929746634, -671700962 }
-               , new int[] { -673197622, -437883156, -251072978, 221380900, -771314989, -949949900, -910604034, -671700962, -929746634, -316363230 }), new int[] { 8, 6, 3, 0, 7, 1, 4, 8, 3, 4 });
+            eq(0, (new CityMap()).getLegend(new string[] {"M....M",
+                "...R.M",
+                "R..R.R"}, new int[] { 3, 4 }), "MR");
+            eq(1, (new CityMap()).getLegend(new string[] { "XXXXXXXZXYYY" }, new int[] { 1, 8, 3 }), "ZXY");
+            eq(2, (new CityMap()).getLegend(new string[] {"...........",
+                "...........",
+                "...........",
+                "..........T"}, new int[] { 1 }), "T");
+            eq(3, (new CityMap()).getLegend(new string[] {"AIAAARRI.......GOAI.",
+                ".O..AIIGI.OAAAGI.A.I",
+                ".A.IAAAARI..AI.AAGR.",
+                "....IAI..AOIGA.GAIA.",
+                "I.AIIIAG...GAR.IIAGA",
+                "IA.AOA....I....I.GAA",
+                "IOIGRAAAO.AI.AA.RAAA",
+                "AI.AAA.AIR.AGRIAAG..",
+                "AAAAIAAAI...AAG.RGRA",
+                ".J.IA...G.A.AA.II.AA"}
+               , new int[] { 16, 7, 1, 35, 11, 66 }
+               ), "GOJIRA");
         }
         catch (Exception exx)
         {
-            Debug.WriteLine(exx);
-            Debug.WriteLine(exx.StackTrace);
+            System.Console.WriteLine(exx);
+            System.Console.WriteLine(exx.StackTrace);
         }
     }
     private static void eq(int n, object have, object need)
     {
+        if (cases != null && cases.Count > 0)
+            if (!cases.Exists((a) => a == n))
+                return;
         if (eq(have, need))
         {
             Debug.WriteLine("Case " + n + " passed.");
@@ -71,6 +83,9 @@ public class PiecewiseLinearFunctionDiv2
     }
     private static void eq(int n, Array have, Array need)
     {
+        if (cases != null && cases.Count > 0)
+            if (!cases.Exists((a) => a == n))
+                return;
         if (have == null || have.Length != need.Length)
         {
             Debug.WriteLine("Case " + n + " failed: returned " + have.Length + " elements; expected " + need.Length + " elements.");
@@ -135,3 +150,4 @@ public class PiecewiseLinearFunctionDiv2
     }
     // END CUT HERE
 }
+
