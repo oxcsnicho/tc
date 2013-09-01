@@ -7,22 +7,20 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Globalization;
 
 public class IDNumberVerification
 {
     public string verify(string id, string[] regionCodes)
     {
-        string r = id.Substring(0, 6);
-        List<string> rr = new List<string>(regionCodes);
-        if (!rr.Exists((a) => a == r))
+        if (!regionCodes.Contains(id.Substring(0, 6)))
             return "Invalid";
-
-        DateTime dt;
         try
         {
-            dt = DateTime.ParseExact(id.Substring(6, 8), "yyyyMMdd", CultureInfo.InvariantCulture);
-            if (dt < DateTime.Parse("1900-1-1") || dt >= DateTime.Parse("2012-1-1"))
+            var c = CultureInfo.InvariantCulture;
+            DateTime dt = DateTime.ParseExact(id.Substring(6, 8), "yyyyMMdd", c);
+            if (dt < DateTime.Parse("1900-01-01") || dt > DateTime.Parse("2011-12-31"))
                 return "Invalid";
         }
         catch
@@ -31,32 +29,26 @@ public class IDNumberVerification
         }
 
         string res;
-        string s = id.Substring(14, 3);
-        if (s == "000")
+        if (id.Substring(14, 3) == "000")
             return "Invalid";
-        if ((s[2] - '0') % 2 == 0)
-            res = "Female";
-        else
-            res = "Male";
+        res = (id[16] - '0') % 2 == 0 ? "Female" : "Male";
 
-        int sum = 0;
+        int x = 0;
         for (int i = 0; i < 17; i++)
         {
-            sum += (id[i] - '0') % 11;
-            sum *= 2;
-            sum %= 11;
+            x += id[i] - '0';
+            x = (x * 2) % 11;
         }
-        sum = 12 - sum;
-        sum %= 11;
-        if (sum == 10 && id[17] == 'X')
-            return res;
-        else if (id[17] == '0' + sum)
+        x = (12 - x) % 11;
+        if (id[17] == 'X' && x == 10
+            || id[17] == '0' + x)
             return res;
         else
             return "Invalid";
     }
 
     // BEGIN CUT HERE
+    static List<int> cases = new List<int> { };
     public static void Test()
     {
         try
@@ -76,6 +68,9 @@ public class IDNumberVerification
     }
     private static void eq(int n, object have, object need)
     {
+        if (cases != null && cases.Count > 0)
+            if (!cases.Exists((a) => a == n))
+                return;
         if (eq(have, need))
         {
             Debug.WriteLine("Case " + n + " passed.");
@@ -91,6 +86,9 @@ public class IDNumberVerification
     }
     private static void eq(int n, Array have, Array need)
     {
+        if (cases != null && cases.Count > 0)
+            if (!cases.Exists((a) => a == n))
+                return;
         if (have == null || have.Length != need.Length)
         {
             Debug.WriteLine("Case " + n + " failed: returned " + have.Length + " elements; expected " + need.Length + " elements.");
