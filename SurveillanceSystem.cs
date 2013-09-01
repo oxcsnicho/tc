@@ -7,166 +7,156 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
-public class SurveillanceSystem
-{
-    public string getContainerInfo(string containers, int[] reports, int L)
-    {
-        int[] a = new int[containers.Length - L + 1];
-        Array.Clear(a, 0, a.Length);
-        for (int i = 0; i < a.Length; i++)
+public class SurveillanceSystem {
+    public string getContainerInfo(string containers, int[] reports, int L) {
+        char[] res = new char[containers.Length];
+        for (int i = 0; i < res.Length; i++)
+        {
+            res[i] = '-';
+        }
+        int[] pos = new int[containers.Length - L + 1];
+        for (int i = 0; i < pos.Length; i++)
         {
             for (int j = 0; j < L; j++)
             {
-                if (containers[i + j] == 'X')
-                    a[i]++;
+                pos[i] += containers[i + j] == 'X' ? 1 : 0;
             }
         }
-
-        Dictionary<int, int> rep = new Dictionary<int, int>();
+        // BEGIN CUT HERE
+        print(pos);
+        // END CUT HERE
+        Dictionary<int, int> d = new Dictionary<int, int>();
         for (int i = 0; i < reports.Length; i++)
         {
-            if (rep.ContainsKey(reports[i]))
-                rep[reports[i]]++;
+            if (d.ContainsKey(reports[i]))
+                d[reports[i]]++;
             else
-                rep[reports[i]] = 1;
+                d[reports[i]] = 1;
         }
-
-        char[] res = new char[containers.Length];
-        for (int i = 0; i < res.Length; i++)
-            res[i] = '-';
-        foreach (var item in rep)
+        foreach (var item in d)
         {
-            var c = new List<int>();
-            for (int j = 0; j < a.Length; j++)
+            List<int> ind = new List<int>();
+            for (int i = 0; i < pos.Length; i++)
             {
-                if (a[j] == item.Key)
-                    c.Add(j);
+                if (pos[i] == item.Key)
+                    ind.Add(i);
             }
-            int[] d = new int[containers.Length];
-            Array.Clear(d, 0, d.Length);
-            for (int j = 0; j < c.Count; j++)
+            //find all occurances
+            int[] tmp = new int[containers.Length];
+            Array.Clear(tmp, 0, tmp.Length);
+            for (int i = 0; i < ind.Count; i++)
             {
-                for (int k = 0; k < L; k++)
+                for (int j = 0; j < L; j++)
                 {
-                    d[c[j] + k]++;
+                    tmp[ind[i] + j]++;
                 }
             }
-            for (int j = 0; j < d.Length; j++)
+            // BEGIN CUT HERE
+            print(tmp);
+            // END CUT HERE
+            for (int i = 0; i < tmp.Length; i++)
             {
-                if (d[j] >= c.Count - item.Value + 1)
-                    res[j] = '+';
-                else if (d[j] > 0)
-                    if (res[j] != '+')
-                        res[j] = '?';
+                if (tmp[i] >= ind.Count - item.Value + 1)
+                {
+                    if (res[i] != '+')
+                        res[i] = '+';
+                }
+                else if (tmp[i] > 0)
+                {
+                    if (res[i] == '-')
+                        res[i] = '?';
+                }
             }
+            // BEGIN CUT HERE
+            print(res);
+            // END CUT HERE
+            // reflect to temp map
+            // calculate temp result
+            // consolidate into all result
         }
         return new string(res);
     }
 
-    // BEGIN CUT HERE
+// BEGIN CUT HERE
     static List<int> cases = new List<int> { };
-    public static void Test()
-    {
-        try
-        {
-            eq(0, (new SurveillanceSystem()).getContainerInfo("-X--XX", new int[] { 1, 2 }, 3), "??++++");
-            eq(1, (new SurveillanceSystem()).getContainerInfo("-XXXXX-", new int[] { 2 }, 3), "???-???");
-            eq(2, (new SurveillanceSystem()).getContainerInfo("------X-XX-", new int[] { 3, 0, 2, 0 }, 5), "++++++++++?");
-            eq(3, (new SurveillanceSystem()).getContainerInfo("-XXXXX---X--", new int[] { 2, 1, 0, 1 }, 3), "???-??++++??");
-            eq(4, (new SurveillanceSystem()).getContainerInfo("-XX--X-XX-X-X--X---XX-X---XXXX-----X", new int[] { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 }, 7), "???++++?++++++++++++++++++++??????--");
-        }
-        catch (Exception exx)
-        {
+    public static void Test() {
+        try  {
+            eq(0,(new SurveillanceSystem()).getContainerInfo("-X--XX", new int[] {1, 2}, 3),"??++++");
+            eq(1,(new SurveillanceSystem()).getContainerInfo("-XXXXX-", new int[] {2}, 3),"???-???");
+            eq(2,(new SurveillanceSystem()).getContainerInfo("------X-XX-", new int[] {3, 0, 2, 0}, 5),"++++++++++?");
+            eq(3,(new SurveillanceSystem()).getContainerInfo("-XXXXX---X--", new int[] {2, 1, 0, 1}, 3),"???-??++++??");
+            eq(4,(new SurveillanceSystem()).getContainerInfo("-XX--X-XX-X-X--X---XX-X---XXXX-----X", new int[] {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3}, 7),"???++++?++++++++++++++++++++??????--");
+        } 
+        catch( Exception exx)  {
             System.Console.WriteLine(exx);
-            System.Console.WriteLine(exx.StackTrace);
+            System.Console.WriteLine( exx.StackTrace);
         }
     }
-    private static void eq(int n, object have, object need)
-    {
+    private static void eq( int n, object have, object need) {
         if (cases != null && cases.Count > 0)
             if (!cases.Exists((a) => a == n))
                 return;
-        if (eq(have, need))
-        {
-            Debug.WriteLine("Case " + n + " passed.");
-        }
-        else
-        {
-            Debug.Write("Case " + n + " failed: expected ");
-            print(need);
-            Debug.Write(", received ");
-            print(have);
+        if( eq( have, need ) ) {
+            Debug.WriteLine( "Case "+n+" passed." );
+        } else {
+            Debug.Write( "Case "+n+" failed: expected " );
+            print( need );
+            Debug.Write( ", received " );
+            print( have );
             Debug.WriteLine("");
         }
     }
-    private static void eq(int n, Array have, Array need)
-    {
+    private static void eq( int n, Array have, Array need) {
         if (cases != null && cases.Count > 0)
             if (!cases.Exists((a) => a == n))
                 return;
-        if (have == null || have.Length != need.Length)
-        {
-            Debug.WriteLine("Case " + n + " failed: returned " + have.Length + " elements; expected " + need.Length + " elements.");
-            print(have);
-            print(need);
+        if( have == null || have.Length != need.Length ) {
+            Debug.WriteLine("Case "+n+" failed: returned "+have.Length+" elements; expected "+need.Length+" elements.");
+            print( have );
+            print( need );
             return;
         }
-        for (int i = 0; i < have.Length; i++)
-        {
-            if (!eq(have.GetValue(i), need.GetValue(i)))
-            {
-                Debug.WriteLine("Case " + n + " failed. Expected and returned array differ in position " + i);
-                print(have);
-                print(need);
+        for( int i= 0; i < have.Length; i++ ) {
+            if( ! eq( have.GetValue(i), need.GetValue(i) ) ) {
+                Debug.WriteLine( "Case "+n+" failed. Expected and returned array differ in position "+i );
+                print( have );
+                print( need );
                 return;
             }
         }
-        Debug.WriteLine("Case " + n + " passed.");
+        Debug.WriteLine("Case "+n+" passed.");
     }
-    private static bool eq(object a, object b)
-    {
-        if (a is double && b is double)
-        {
-            return Math.Abs((double)a - (double)b) < 1E-9;
-        }
-        else
-        {
-            return a != null && b != null && a.Equals(b);
+    private static bool eq( object a, object b ) {
+        if ( a is double && b is double ) {
+            return Math.Abs((double)a-(double)b) < 1E-9;
+        } else {
+            return a!=null && b!=null && a.Equals(b);
         }
     }
-    private static void print(object a)
-    {
-        if (a is string)
-        {
+    private static void print( object a ) {
+        if ( a is string ) {
             Debug.Write(string.Format("\"{0}\"", a));
-        }
-        else if (a is long)
-        {
+        } else if ( a is long ) {
             Debug.Write(string.Format("{0}L", a));
-        }
-        else
-        {
+        } else {
             Debug.Write(a);
         }
     }
-    private static void print(Array a)
-    {
-        if (a == null)
-        {
+    private static void print( Array a ) {
+        if ( a == null) {
             Debug.WriteLine("<NULL>");
         }
         Debug.Write('{');
-        for (int i = 0; i < a.Length; i++)
-        {
-            print(a.GetValue(i));
-            if (i != a.Length - 1)
-            {
+        for ( int i= 0; i < a.Length; i++ ) {
+            print( a.GetValue(i) );
+            if( i != a.Length-1 ) {
                 Debug.Write(", ");
             }
         }
-        Debug.WriteLine('}');
+        Debug.WriteLine( '}' );
     }
-    // END CUT HERE
+// END CUT HERE
 }
 

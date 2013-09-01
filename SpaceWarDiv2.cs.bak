@@ -7,10 +7,60 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 public class SpaceWarDiv2 {
-    public int minimalFatigue(int[] magicalGirlStrength, int[] enemyStrength, int[] enemyCount) {
-        int res;
+    public int minimalFatigue(int[] mg, int[] es, int[] ec) {
+        int[] fg = new int[mg.Length];
+        Array.Clear(fg,0,fg.Length);
+        // sort es
+        Array.Sort(es, ec);
+        Array.Sort(mg);
+        Array.Reverse(mg);
+        Array.Reverse(es);
+        Array.Reverse(ec);
+        // BEGIN CUT HERE
+        print(mg);
+        print(es);
+        print(ec);
+        // END CUT HERE
+        // foreach es
+        for (int i = 0; i < es.Length; i++)
+        {
+            int k=-1;
+            int t =0;
+            for (int j = 0; j < mg.Length; j++)
+            {
+                if (mg[j] >=es[i])
+                {
+                    k = j;
+                    t+=fg[j];
+                }
+            }
+            if(k==-1)
+                return -1;
+            int tt = (t + ec[i] + k) / (k + 1);
+            for (int j = 0; j <= k; j++)
+            {
+                if (ec[i] > 0 && tt>=fg[j])
+                {
+                    int del = Math.Min(ec[i], tt - fg[j]);
+                    ec[i] -= del;
+                    fg[j] += del;
+                }
+            }
+            // BEGIN CUT HERE
+            print(fg);
+            // END CUT HERE
+        }
+        // find applicable mg
+        // distribute gf
+        //find max fatigue
+        int res = 0;
+        for (int i = 0; i < fg.Length; i++)
+        {
+            res = Math.Max(res, fg[i]);
+        }
         return res;
     }
 

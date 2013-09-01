@@ -41,8 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\IDNumberVerification.cs">
-      <Link>IDNumberVerification.cs</Link>
+    <Compile Include="..\SurveillanceSystem.cs">
+      <Link>SurveillanceSystem.cs</Link>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
