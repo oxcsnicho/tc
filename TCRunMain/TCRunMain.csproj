@@ -41,8 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\NextOrPrev.cs">
-      <Link>NextOrPrev.cs</Link>
+    <Compile Include="..\RobotHerbDiv2.cs">
+      <Link>RobotHerbDiv2.cs</Link>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
