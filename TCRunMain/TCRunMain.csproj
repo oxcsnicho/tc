@@ -41,8 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\PastingPaintingDivTwo.cs">
-      <Link>PastingPaintingDivTwo.cs</Link>
+    <Compile Include="..\XorTravelingSalesman.cs">
+      <Link>XorTravelingSalesman.cs</Link>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
