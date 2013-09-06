@@ -16,7 +16,7 @@ public class XorTravelingSalesman
         prof = cityValues;
         map = roads;
         mark = new bool[map.Length, 1024];
-        dfs(0, prof[0]);
+        dfs1(0, prof[0]);
         int res = 1023;
         while (res > 0)
         {
@@ -33,6 +33,18 @@ public class XorTravelingSalesman
     int[] prof;
     string[] map;
     bool[,] mark;
+    Stack<int> X = new Stack<int>(), P = new Stack<int>();
+    void dfs1(int x, int p)
+    {
+        dfs2(x, p);
+        while (X.Count > 0)
+            dfs(X.Pop(), P.Pop());
+    }
+    void dfs2(int x, int p)
+    {
+        X.Push(x);
+        P.Push(p);
+    }
     void dfs(int x, int p)
     {
         if (mark[x, p])
@@ -42,7 +54,7 @@ public class XorTravelingSalesman
         for (int i = 0; i < map[x].Length; i++)
         {
             if (map[x][i] == 'Y')
-                dfs(i, p ^ prof[i]);
+                dfs2(i, p ^ prof[i]);
         }
     }
 
