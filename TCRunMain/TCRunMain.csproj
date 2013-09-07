@@ -41,8 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\XorTravelingSalesman.cs">
-      <Link>XorTravelingSalesman.cs</Link>
+    <Compile Include="..\ColorfulChocolates.cs">
+      <Link>ColorfulChocolates.cs</Link>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
