@@ -9,32 +9,24 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-public class GooseTattarrattatDiv2 {
-    public int getmin(string S) {
-        int res=0;
-        int[] c = new int[26];
-        for (int i = 0; i < S.Length; i++)
-        {
-            c[S[i] - 'a']++;
-        }
-        int max = 0;
-        for (int i = 0; i < c.Length; i++)
-        {
-            res += c[i];
-            max = Math.Max(max, c[i]);
-        }
-        return res-max;
+public class RotatingBot {
+    public int minArea(int[] moves) {
+        int res;
+        return res;
     }
 
 // BEGIN CUT HERE
     static List<int> cases = new List<int> { };
     public static void Test() {
         try  {
-            eq(0,(new GooseTattarrattatDiv2()).getmin("geese"),2);
-            eq(1,(new GooseTattarrattatDiv2()).getmin("tattarrattat"),6);
-            eq(2,(new GooseTattarrattatDiv2()).getmin("www"),0);
-            eq(3,(new GooseTattarrattatDiv2()).getmin("topcoder"),6);
-            eq(4,(new GooseTattarrattatDiv2()).getmin("xrepayuyubctwtykrauccnquqfuqvccuaakylwlcjuyhyammag"),43);
+            eq(0,(new RotatingBot()).minArea(new int[] {15}),16);
+            eq(1,(new RotatingBot()).minArea(new int[] {3,10}),44);
+            eq(2,(new RotatingBot()).minArea(new int[] {1,1,1,1}),-1);
+            eq(3,(new RotatingBot()).minArea(new int[] {9,5,11,10,11,4,10}),132);
+            eq(4,(new RotatingBot()).minArea(new int[] {12,1,27,14,27,12,26,11,25,10,24,9,23,8,22,7,21,6,20,5,19,4,18,3,17,2,16,1,15}),420);
+            eq(5,(new RotatingBot()).minArea(new int[] {8,6,6,1}),-1);
+            eq(6,(new RotatingBot()).minArea(new int[] {8,6,6}),63);
+            eq(7,(new RotatingBot()).minArea(new int[] {5,4,5,3,3}),30);
         } 
         catch( Exception exx)  {
             System.Console.WriteLine(exx);
